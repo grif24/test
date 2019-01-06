@@ -20,14 +20,14 @@
 
 #define _mm256_rotr_epi64(a,n) (_mm256_or_si256(_mm256_srli_epi64(a,n), _mm256_slli_epi64(a,64-n)))
 
-#define Q(a,b,c,d,e,r1,r2) 							        \
+#define Q(a,b,c,d,r1,r2) 							        \
 	do { 									\
 		c = _mm256_add_epi64(c, a); 					\
 		d = _mm256_add_epi64(d, b); 					\
-		e = _mm256_add_epi64(e, _mm256_rotr_epi64(d,r1)); 					\
-		a = _mm256_xor_si256(a, e);		\
-		e = _mm256_add_epi64(e, _mm256_rotr_epi64(c,r2)); 					\
-		b = _mm256_xor_si256(b, e);		\
+		a = _mm256_xor_si256(a, d);		\
+		b = _mm256_xor_si256(b, c);		\
+		c = _mm256_add_epi64(c, _mm256_rotr_epi64(a,r1)); 					\
+		d = _mm256_add_epi64(d, _mm256_rotr_epi64(b,r2)); 					\
 	} while(0)
 #define SLICE(b,c,d)								\
 	do { 									\
@@ -41,22 +41,22 @@
 		c = _mm256_permute4x64_epi64(c, _MM_SHUFFLE(1, 0, 3, 2));	\
 		d = _mm256_permute4x64_epi64(d, _MM_SHUFFLE(0, 3, 2, 1));	\
 	} while(0)
-#define MIX(a,b,c,d,e)                            				        \
+#define MIX(a,b,c,d)                            				        \
 	do {                                    				\
-		Q(a,b,c,d,e,11,32);						        \
-		Q(a,b,c,d,e,48,53);						        \
-		Q(a,b,c,d,e,61,24);						        \
+		Q(a,b,c,d,11,32);						        \
+		Q(a,b,c,d,48,53);						        \
+		Q(a,b,c,d,61,24);						        \
 	} while(0)
 #define ROUND(n)                                				\
 	do {                                    				\
 		as[0] ^= rc[n];							\
 										\
-		MIX(as,bs,cs,ds,es); 						        \
+		MIX(as,bs,cs,ds); 						        \
 		SLICE(bs,cs,ds);						        \
 										\
 		as[0] ^= rc[n+1];						\
 										\
-		MIX(as,bs,cs,ds,es); 						        \
+		MIX(as,bs,cs,ds); 						        \
 		UNSLICE(bs,cs,ds);						        \
 	} while(0)
 #endif
