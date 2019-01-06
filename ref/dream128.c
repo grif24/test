@@ -18,50 +18,53 @@
 #include "../common/dream_impl.h"
 #include "../common/dream.h"
 
-static const uint64_t rc[6] = { 
+static const uint64_t rc[8] = { 
 	0x243F6A8885A308D3,
 	0x13198A2E03707344,
 	0xA4093822299F31D0,
 	0x082EFA98EC4E6C89,
 	0x452821E638D01377,
+	0xBE5466CF34E90C6C,
+	0x452821E638D01377,
 	0xBE5466CF34E90C6C
 };
 
-#define Q(a,b,c,d,r1,r2) (c += a, d += b, a ^= d, b ^= c, c += ror64(a,r1), d += ror64(b,r2))
-#define MIX(a,b,c,d)                                  \
+#define Q(a,b,c,d,e,r1,r2) (c += a, d += b, e += ror64(d,r1), a ^= e, e += ror64(c,r2), b ^= e)
+#define MIX(a,b,c,d,e)                                  \
 	do {                                            \
-		Q(a,b,c,d,11,32);                     \
-		Q(a,b,c,d,48,53);                     \
-		Q(a,b,c,d,61,24);                     \
+		Q(a,b,c,d,e,11,32);                     \
+		Q(a,b,c,d,e,48,53);                     \
+		Q(a,b,c,d,e,61,24);                     \
 	} while(0)
 #define ROUND(n)                                        \
 	do {                                            \
 		s[0] ^= rc[n];			        \
 						        \
-		MIX(s[0],s[4],s[8],s[12]);        \
-		MIX(s[1],s[5],s[9],s[13]);        \
-		MIX(s[2],s[6],s[10],s[14]);       \
-		MIX(s[3],s[7],s[11],s[15]);       \
+		MIX(s[0],s[4],s[8],s[12],s[16]);        \
+		MIX(s[1],s[5],s[9],s[13],s[17]);        \
+		MIX(s[2],s[6],s[10],s[14],s[18]);       \
+		MIX(s[3],s[7],s[11],s[15],s[19]);       \
                                                         \
 		s[0] ^= rc[n+1];		        \
                                                         \
-		MIX(s[0],s[5],s[10],s[15]);       \
-		MIX(s[1],s[6],s[11],s[12]);       \
-		MIX(s[2],s[7],s[8],s[13]);        \
-		MIX(s[3],s[4],s[9],s[14]);        \
+		MIX(s[0],s[5],s[10],s[15],s[16]);       \
+		MIX(s[1],s[6],s[11],s[12],s[17]);       \
+		MIX(s[2],s[7],s[8],s[13],s[18]);        \
+		MIX(s[3],s[4],s[9],s[14],s[19]);        \
 	} while(0)
 
 static void f(uint8_t *state)
 {
-	uint64_t s[16];
-	for(size_t i = 0; i < 16; i++)
+	uint64_t s[20];
+	for(size_t i = 0; i < 20; i++)
 		s[i] = load64(state + (i * sizeof *s));
 
 	ROUND(0);
 	ROUND(2);
 	ROUND(4);
+	ROUND(6);
 
-	for(size_t i = 0; i < 16; i++)
+	for(size_t i = 0; i < 20; i++)
 		store64(state + (i * sizeof *s), s[i]);
 }
 
@@ -69,7 +72,7 @@ static void f(uint8_t *state)
 #undef MIX
 #undef ROUND
 
-#define R 96 
+#define R 128 
 
 static void absorb(uint8_t *state, const uint8_t *in, size_t in_l, uint8_t pad)
 {
@@ -105,7 +108,7 @@ static void key_init(uint8_t *state, const uint8_t *key, size_t kl, const uint8_
 
 void dream128_hash(const uint8_t *buf, size_t bl, uint8_t *digest)
 {
-	uint8_t state[128] = {0};
+	uint8_t state[160] = {0};
 	absorb(state, buf, bl, PAD_HASH);
 	squeeze(state, digest, dream128_DIGEST); 
 }
@@ -119,7 +122,7 @@ void dream128_wrap(const uint8_t *key,
         if(hl >= R)
                 return;
 
-	uint8_t state[128] = {0};
+	uint8_t state[160] = {0};
 	key_init(state, key, dream128_KEY, header, hl);
 
 	size_t P = R - 1;
@@ -143,7 +146,7 @@ int dream128_unwrap(const uint8_t *key,
         if(hl >= R)
                 return 0;
 
-	uint8_t state[128] = {0};
+	uint8_t state[160] = {0};
 	key_init(state, key, dream128_KEY, header, hl);
 
 	size_t P = R - 1;
