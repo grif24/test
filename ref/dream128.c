@@ -18,44 +18,42 @@
 #include "../common/dream_impl.h"
 #include "../common/dream.h"
 
-static const uint32_t rc[6] = { 
+static const uint32_t rc[8] = { 
 	0x243F6A88,
 	0x13198A2E,
+	0xA4093822,
+	0x082EFA98,
 	0xA4093822,
 	0x082EFA98,
 	0xA4093822,
 	0x082EFA98
 };
 
-#define Q(a,b,c,r) (c += b, a ^= ror32(c,r), b += a)
-#define MIX(a,b,c)			\
-	do {                            \
-		Q(a,b,c,16);            \
-		Q(a,b,c,23);		\
-		Q(a,b,c,8);		\
-	} while(0)
+#define Q(a,b,c,r) (b += a, c += ror32(b,r), a ^= c)
+#define MIX(a,b,c)                            \
+        do {                                    \
+                Q(a,b,c,16);                \
+                Q(a,b,c,31);               \
+                Q(a,b,c,24);               \
+        } while(0)
 #define ROUND(n)                        \
 	do {                            \
 		s[0] ^= rc[n];          \
-				        \
 		MIX(s[0],s[8],s[16]);   \
 		MIX(s[1],s[9],s[17]);   \
 		MIX(s[2],s[10],s[18]);  \
 		MIX(s[3],s[11],s[19]);  \
-                                        \
-		MIX(s[4],s[12],s[20]);  \
-		MIX(s[5],s[13],s[21]);  \
+		MIX(s[4],s[12],s[20]);   \
+		MIX(s[5],s[13],s[21]);   \
 		MIX(s[6],s[14],s[22]);  \
 		MIX(s[7],s[15],s[23]);  \
 		s[0] ^= rc[n+1];        \
-                                        \
 		MIX(s[4],s[9],s[18]);   \
-		MIX(s[5],s[10],s[19]);  \
+		MIX(s[5],s[10],s[19]);   \
 		MIX(s[6],s[11],s[16]);  \
-		MIX(s[7],s[8],s[17]);   \
-                                        \
-		MIX(s[0],s[13],s[22]);  \
-		MIX(s[1],s[14],s[23]);  \
+		MIX(s[7],s[8],s[17]);  \
+		MIX(s[0],s[13],s[22]);   \
+		MIX(s[1],s[14],s[23]);   \
 		MIX(s[2],s[15],s[20]);  \
 		MIX(s[3],s[12],s[21]);  \
 	} while(0)
@@ -69,6 +67,7 @@ static void f(uint8_t *state)
 	ROUND(0);
 	ROUND(2);
 	ROUND(4);
+	ROUND(6);
 
 	for(size_t i = 0; i < 24; i++)
 		store32(state + (i * sizeof *s), s[i]);

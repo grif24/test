@@ -22,9 +22,11 @@
 #include <emmintrin.h>
 #include <smmintrin.h>
 
-static const uint32_t rc[6] = { 
+static const uint32_t rc[8] = { 
 	0x243F6A88,
 	0x13198A2E,
+	0xA4093822,
+	0x082EFA98,
 	0xA4093822,
 	0x082EFA98,
 	0xA4093822,
@@ -47,6 +49,7 @@ static void f(uint8_t *state)
 	ROUND(0);
 	ROUND(2);
 	ROUND(4);
+	ROUND(6);
 
 	 s[0] = _mm_extract_epi32(as, 0);
 	 s[1] = _mm_extract_epi32(as, 1);

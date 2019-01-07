@@ -21,9 +21,9 @@
 #define _mm_rotr_epi32(a,n) (_mm_or_si128(_mm_srli_epi32(a,n), _mm_slli_epi32(a,32-n)))
 #define Q(a,b,c,r) 							        \
 	do { 									\
-		c = _mm_add_epi32(c, b); 					\
-		a = _mm_xor_si128(a, _mm_rotr_epi32(c,r));		        \
-		b = _mm_add_epi32(b, a);		                        \
+		b = _mm_add_epi32(b, a); 					\
+		c = _mm_add_epi32(c, _mm_rotr_epi32(b,r));		                        \
+		a = _mm_xor_si128(a, c);		                        \
 	} while(0)
 #define SLICE(b,c)								\
 	do { 									\
@@ -38,8 +38,8 @@
 #define MIX(a,b,c)                            				        \
 	do {                                    				\
 		Q(a,b,c,16);						        \
-		Q(a,b,c,23);						        \
-		Q(a,b,c,8);						        \
+		Q(a,b,c,31);						        \
+		Q(a,b,c,24);						        \
 	} while(0)
 #define ROUND(n)                                				\
 	do {                                    				\

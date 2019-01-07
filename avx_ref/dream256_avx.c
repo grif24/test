@@ -21,13 +21,15 @@
 
 #include <immintrin.h>
 
-static const uint64_t rc[8] = { 
+static const uint64_t rc[10] = { 
 	0x243F6A8885A308D3,
 	0x13198A2E03707344,
 	0xA4093822299F31D0,
 	0x082EFA98EC4E6C89,
 	0x452821E638D01377,
 	0xBE5466CF34E90C6C,
+	0xA4093822299F31D0,
+	0x082EFA98EC4E6C89,
 	0xA4093822299F31D0,
 	0x082EFA98EC4E6C89
 };
@@ -49,6 +51,7 @@ static void f(uint8_t *state)
 	ROUND(2);
 	ROUND(4);
 	ROUND(6);
+	ROUND(8);
 
 	 s[0] = _mm256_extract_epi64(as, 0);
 	 s[1] = _mm256_extract_epi64(as, 1);

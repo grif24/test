@@ -68,7 +68,7 @@ void bench()
     for( i = 0; i <= BENCH_TRIALS; ++i )
     {
       cycles[i] = cpucycles();
-      dream256_hash( in, j, in );
+      dream128_hash(in, j, in );
     }
 
     for( i = 0; i < BENCH_TRIALS; ++i )

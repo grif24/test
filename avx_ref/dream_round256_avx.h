@@ -21,9 +21,9 @@
 #define _mm256_rotr_epi64(a,n) _mm256_or_si256(_mm256_srli_epi64(a,n), _mm256_slli_epi64(a,64-n))
 #define Q(a,b,c,r) 							        \
 	do { 									\
-		c = _mm256_add_epi64(c, b); 					\
-		a = _mm256_xor_si256(a, _mm256_rotr_epi64(c,r));		\
-		b = _mm256_add_epi64(b, a);		                        \
+		b = _mm256_add_epi64(b, a); 					\
+		c = _mm256_add_epi64(c, _mm256_rotr_epi64(b,r));		\
+		a = _mm256_xor_si256(a, c);		                        \
 	} while(0)
 #define SLICE(b,c)								\
 	do { 									\
@@ -37,9 +37,9 @@
 	} while(0)
 #define MIX(a,b,c)                            				        \
 	do {                                    				\
-		Q(a,b,c,11);						        \
-		Q(a,b,c,48);						        \
 		Q(a,b,c,32);						        \
+		Q(a,b,c,15);						        \
+		Q(a,b,c,48);						        \
 	} while(0)
 #define ROUND(n)                                				\
 	do {                                    				\

@@ -1,4 +1,4 @@
-CCFLAGS = -std=gnu99 -O3 -march=native -s
+CCFLAGS = -m64 -std=gnu99 -O3 -march=native -s
 
 avx_tests: tests.o dream128_avx.o dream256_avx.o
 		gcc -o avx_tests tests.o avx_ref/dream128_avx.o avx_ref/dream256_avx.o
