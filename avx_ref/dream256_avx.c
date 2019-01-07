@@ -17,33 +17,38 @@
    */
 #include "../common/dream_impl.h"
 #include "../common/dream.h"
-#include "dream_round_avx.h"
+#include "dream_round256_avx.h"
 
 #include <immintrin.h>
 
-static const uint64_t rc[6] = { 
+static const uint64_t rc[8] = { 
 	0x243F6A8885A308D3,
 	0x13198A2E03707344,
 	0xA4093822299F31D0,
 	0x082EFA98EC4E6C89,
 	0x452821E638D01377,
-	0xBE5466CF34E90C6C
+	0xBE5466CF34E90C6C,
+	0xA4093822299F31D0,
+	0x082EFA98EC4E6C89
 };
 
 static void f(uint8_t *state)
 {
-	uint64_t s[16];
-	for(size_t i = 0; i < 16; i++)
+	uint64_t s[24];
+	for(size_t i = 0; i < 24; i++)
 		s[i] = load64(state + (i * sizeof *s));
 
 	__m256i as = _mm256_set_epi64x(s[3],s[2],s[1],s[0]);
 	__m256i bs = _mm256_set_epi64x(s[7],s[6],s[5],s[4]);
 	__m256i cs = _mm256_set_epi64x(s[11],s[10],s[9],s[8]);
 	__m256i ds = _mm256_set_epi64x(s[15],s[14],s[13],s[12]);
+	__m256i es = _mm256_set_epi64x(s[19],s[18],s[17],s[16]);
+	__m256i fs = _mm256_set_epi64x(s[23],s[22],s[21],s[20]);
 
 	ROUND(0);
 	ROUND(2);
 	ROUND(4);
+	ROUND(6);
 
 	 s[0] = _mm256_extract_epi64(as, 0);
 	 s[1] = _mm256_extract_epi64(as, 1);
@@ -61,12 +66,20 @@ static void f(uint8_t *state)
 	s[13] = _mm256_extract_epi64(ds, 1);
 	s[14] = _mm256_extract_epi64(ds, 2);
 	s[15] = _mm256_extract_epi64(ds, 3);
+	s[16] = _mm256_extract_epi64(es, 0);
+	s[17] = _mm256_extract_epi64(es, 1);
+	s[18] = _mm256_extract_epi64(es, 2);
+	s[19] = _mm256_extract_epi64(es, 3);
+	s[20] = _mm256_extract_epi64(fs, 0);
+	s[21] = _mm256_extract_epi64(fs, 1);
+	s[22] = _mm256_extract_epi64(fs, 2);
+	s[23] = _mm256_extract_epi64(fs, 3);
 
-	for(size_t i = 0; i < 16; i++)
+	for(size_t i = 0; i < 24; i++)
 		store64(state + (i * sizeof *s), s[i]);
 }
 
-#define R 64 
+#define R 128 
 
 static void absorb(uint8_t *state, const uint8_t *in, size_t in_l, uint8_t pad)
 {
@@ -102,7 +115,7 @@ static void key_init(uint8_t *state, const uint8_t *key, size_t kl, const uint8_
 
 void dream256_hash(const uint8_t *buf, size_t bl, uint8_t *digest)
 {
-        uint8_t state[128] = {0};
+        uint8_t state[192] = {0};
         absorb(state, buf, bl, PAD_HASH);
         squeeze(state, digest, dream256_DIGEST); 
 }
@@ -116,7 +129,7 @@ void dream256_wrap(const uint8_t *key,
         if(hl >= R)
                 return;
 
-        uint8_t state[128] = {0};
+        uint8_t state[192] = {0};
         key_init(state, key, dream256_KEY, header, hl);
 
         size_t P = R - 1;
@@ -140,7 +153,7 @@ int dream256_unwrap(const uint8_t *key,
         if(hl >= R)
                 return 0;
 
-        uint8_t state[128] = {0};
+        uint8_t state[192] = {0};
         key_init(state, key, dream256_KEY, header, hl);
 
         size_t P = R - 1;

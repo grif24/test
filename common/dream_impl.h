@@ -21,6 +21,38 @@
 #include <string.h>
 #include <stdint.h>
 
+static inline void store32(uint8_t *d, uint32_t w)
+{
+        memcpy(d, &w, sizeof w);
+        /*
+           d[0] = (uint8_t)(w >>  0);
+           d[1] = (uint8_t)(w >>  8);
+           d[2] = (uint8_t)(w >> 16);
+           d[3] = (uint8_t)(w >> 24);
+           d[4] = (uint8_t)(w >> 32);
+           d[5] = (uint8_t)(w >> 40);
+           d[6] = (uint8_t)(w >> 48);
+           d[7] = (uint8_t)(w >> 56);
+           */
+}
+
+static inline uint32_t load32(const uint8_t *s)
+{
+        uint32_t w;
+        memcpy(&w, s, sizeof w);
+        return w;
+        /*
+           return ((uint64_t )(s[0]) << 0) |
+           ((uint64_t )(s[1]) << 8) |
+           ((uint64_t )(s[2]) << 16) |
+           ((uint64_t )(s[3]) << 24) |
+           ((uint64_t )(s[4]) << 32) |
+           ((uint64_t )(s[5]) << 40) |
+           ((uint64_t )(s[6]) << 48) |
+           ((uint64_t )(s[7]) << 56) ;
+           */
+}
+
 static inline void store64(uint8_t *d, uint64_t w)
 {
         memcpy(d, &w, sizeof w);
@@ -56,6 +88,11 @@ static inline uint64_t load64(const uint8_t *s)
 static inline uint64_t ror64(const uint64_t v, const unsigned n)
 {
         return (v >> n) | (v << (64 - n));
+}
+
+static inline uint32_t ror32(uint32_t a, size_t n) 
+{
+        return (a >> n) | (a << (32 - n));
 }
 
 static inline int cnst_memcmp(const void *a, const void *b, const unsigned size)
