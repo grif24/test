@@ -19,8 +19,7 @@
 #include "../common/dream.h"
 #include "dream_round128_avx.h"
 
-#include <emmintrin.h>
-#include <smmintrin.h>
+#include <x86intrin.h>
 
 static const uint32_t rc[8] = { 
         0x243F6A88,

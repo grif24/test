@@ -19,7 +19,7 @@
 #include "../common/dream.h"
 #include "dream_round256_avx.h"
 
-#include <immintrin.h>
+#include <x86intrin.h>
 
 static const uint64_t rc[10] = { 
         0x243F6A8885A308D3,
