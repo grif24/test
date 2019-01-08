@@ -25,6 +25,12 @@
 		c = _mm256_add_epi64(c, _mm256_rotr_epi64(b,r));		\
 		a = _mm256_xor_si256(a, c);		                        \
 	} while(0)
+#define MIX(a,b,c)                            				        \
+	do {                                    				\
+		Q(a,b,c,32);						        \
+		Q(a,b,c,15);						        \
+		Q(a,b,c,48);						        \
+	} while(0)
 #define SLICE(b,c)								\
 	do { 									\
 		b = _mm256_permute4x64_epi64(b, _MM_SHUFFLE(0, 3, 2, 1));	\
@@ -34,12 +40,6 @@
 	do { 									\
 		b = _mm256_permute4x64_epi64(b, _MM_SHUFFLE(2, 1, 0, 3));	\
 		c = _mm256_permute4x64_epi64(c, _MM_SHUFFLE(1, 0, 3, 2));	\
-	} while(0)
-#define MIX(a,b,c)                            				        \
-	do {                                    				\
-		Q(a,b,c,32);						        \
-		Q(a,b,c,15);						        \
-		Q(a,b,c,48);						        \
 	} while(0)
 #define ROUND(n)                                				\
 	do {                                    				\

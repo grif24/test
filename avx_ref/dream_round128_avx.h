@@ -22,8 +22,14 @@
 #define Q(a,b,c,r) 							        \
 	do { 									\
 		b = _mm_add_epi32(b, a); 					\
-		c = _mm_add_epi32(c, _mm_rotr_epi32(b,r));		                        \
+		c = _mm_add_epi32(c, _mm_rotr_epi32(b,r));		        \
 		a = _mm_xor_si128(a, c);		                        \
+	} while(0)
+#define MIX(a,b,c)                            				        \
+	do {                                    				\
+		Q(a,b,c,16);						        \
+		Q(a,b,c,31);						        \
+		Q(a,b,c,24);						        \
 	} while(0)
 #define SLICE(b,c)								\
 	do { 									\
@@ -34,12 +40,6 @@
 	do { 									\
 		b = _mm_shuffle_epi32(b, _MM_SHUFFLE(2, 1, 0, 3));	        \
 		c = _mm_shuffle_epi32(c, _MM_SHUFFLE(1, 0, 3, 2));	        \
-	} while(0)
-#define MIX(a,b,c)                            				        \
-	do {                                    				\
-		Q(a,b,c,16);						        \
-		Q(a,b,c,31);						        \
-		Q(a,b,c,24);						        \
 	} while(0)
 #define ROUND(n)                                				\
 	do {                                    				\
