@@ -56,8 +56,12 @@ void bench()
 #define BENCH_TRIALS     64
 #define BENCH_MAXLEN   4096
   static unsigned char in[4096];
+  static unsigned char out[4096];
   static unsigned long long median[4096 + 1];
   int i, j;
+  uint8_t key[dream256_KEY] = {0};
+  uint8_t header[24] = {0};
+  uint8_t tag[dream256_DIGEST];
   printf( "#bytes  median  per byte\n" );
 
   /* 1 ... BENCH_MAXLEN */
@@ -68,7 +72,7 @@ void bench()
     for( i = 0; i <= BENCH_TRIALS; ++i )
     {
       cycles[i] = cpucycles();
-      dream256_hash(in, j, in );
+      dream256_wrap(key, header, 24, in, j, out, tag);
     }
 
     for( i = 0; i < BENCH_TRIALS; ++i )
