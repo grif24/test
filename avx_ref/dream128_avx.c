@@ -148,7 +148,7 @@ int dream128_unwrap(const uint8_t *key,
                 const uint8_t *header, size_t hl,
                 const uint8_t *cgram, size_t cl, 
                 uint8_t *body, 
-                uint8_t *tag)
+                const uint8_t *tag)
 {
         if(hl >= R)
                 return 0;
