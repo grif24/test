@@ -18,11 +18,10 @@
 #ifndef DREAM_ROUND_AVX_H
 #define DREAM_ROUND_AVX_H
 
-#define _mm256_rotr_epi64(a,n) _mm256_or_si256(_mm256_srli_epi64(a,n), _mm256_slli_epi64(a,64-n))
 #define Q(a,b,c,r) 							        \
 	do { 									\
 		b = _mm256_add_epi64(b, a); 					\
-		c = _mm256_add_epi64(c, _mm256_rotr_epi64(b,r));		\
+		c = _mm256_add_epi64(c, _mm256_ror_epi64(b,r));		\
 		a = _mm256_xor_si256(a, c);		                        \
 	} while(0)
 #define MIX(a,b,c)                            				        \

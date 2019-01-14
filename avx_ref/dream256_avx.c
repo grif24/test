@@ -19,7 +19,7 @@
 #include "../common/dream.h"
 #include "dream_round256_avx.h"
 
-#include <immintrin.h>
+#include <x86intrin.h>
 
 static const uint64_t rc[10] = { 
         0x243F6A8885A308D3,
@@ -170,7 +170,7 @@ int dream256_unwrap(const uint8_t *key,
                 const uint8_t *header, size_t hl,
                 const uint8_t *cgram, size_t cl, 
                 uint8_t *body, 
-                uint8_t *tag)
+                const uint8_t *tag)
 {
         if(hl >= R)
                 return 0;

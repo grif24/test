@@ -48,7 +48,7 @@ int dream128_unwrap(const uint8_t *key,
                 const uint8_t *header, size_t hl,
                 const uint8_t *cgram, size_t cl, 
                 uint8_t *body, 
-                uint8_t *tag);
+                const uint8_t *tag);
 
 size_t dream256_update(uint8_t *state, const uint8_t *in, size_t in_l);
 void dream256_final(uint8_t *state, const uint8_t *in, size_t in_l);
@@ -62,5 +62,5 @@ int dream256_unwrap(const uint8_t *key,
                 const uint8_t *header, size_t hl,
                 const uint8_t *cgram, size_t cl, 
                 uint8_t *body, 
-                uint8_t *tag);
+                const uint8_t *tag);
 #endif
