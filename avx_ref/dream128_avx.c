@@ -114,6 +114,25 @@ static void key_init(uint8_t *state, const uint8_t *key, size_t kl, const uint8_
         absorb(state, nonce, nl, PAD_KEYSTREAM);
 }
 
+size_t dream128_update(uint8_t *state, const uint8_t *in, size_t in_l)
+{
+	for(; in_l >= R; in += R, in_l -= R) {
+		for(size_t i = 0; i < R; i++) 
+			state[i] ^= in[i];        
+		f(state);
+	}
+        return in_l;
+}
+
+void dream128_final(uint8_t *state, const uint8_t *in, size_t in_l)
+{
+	for(size_t i = 0; i < in_l; i++)
+		state[i] ^= in[i];
+	state[in_l] ^= PAD_HASH;
+	state[R - 1] ^= 0x80;
+        f(state);
+}
+
 void dream128_hash(const uint8_t *buf, size_t bl, uint8_t *digest)
 {
         uint8_t state[96] = {0};

@@ -3,7 +3,7 @@
 
 static uint8_t vec1[] = "Yet not so many, not so fair, as when Thangorodrim was broken";
 static uint8_t vec2[] = "The quick brown fox jumps over the lazy brown dog.";
-static uint8_t vec3[] = "Hello, world!";
+static uint8_t vec3[] = "Hello, world ";
 
 void print_hex(const uint8_t *buf, size_t bl)
 {
