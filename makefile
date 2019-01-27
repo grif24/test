@@ -1,5 +1,5 @@
 CC = gcc 
-CCFLAGS = -m64 -std=gnu99 -O3 -march=native -s
+CCFLAGS = -m64 -std=gnu99 -O3 -mavx2 -s
 
 dsum256_avx: dsum256.o dream256_avx.o
 		$(CC) -o dsum256_avx dsum256.o avx_ref/dream256_avx.o
