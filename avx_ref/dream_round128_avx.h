@@ -18,10 +18,12 @@
 #ifndef DREAM_ROUND_AVX_H
 #define DREAM_ROUND_AVX_H
 
+#define _mm_rotr_epi32(a,n) (_mm_or_si128(_mm_srli_epi32(a,n), _mm_slli_epi32(a,32-n)))
+
 #define Q(a,b,c,r) 							        \
 	do { 									\
 		b = _mm_add_epi32(b, a); 					\
-		c = _mm_add_epi32(c, _mm_ror_epi32(b,r));		        \
+		c = _mm_add_epi32(c, _mm_rotr_epi32(b,r));		        \
 		a = _mm_xor_si128(a, c);		                        \
 	} while(0)
 #define MIX(a,b,c)                            				        \
@@ -35,7 +37,7 @@
 		b = _mm_shuffle_epi32(b, _MM_SHUFFLE(0, 3, 2, 1));	        \
 		c = _mm_shuffle_epi32(c, _MM_SHUFFLE(1, 0, 3, 2));	        \
 	} while(0)
-#define UNSLICE(b,c)								\
+#define UNSLICE(b,c)						\
 	do { 									\
 		b = _mm_shuffle_epi32(b, _MM_SHUFFLE(2, 1, 0, 3));	        \
 		c = _mm_shuffle_epi32(c, _MM_SHUFFLE(1, 0, 3, 2));	        \
