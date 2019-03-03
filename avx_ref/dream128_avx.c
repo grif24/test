@@ -19,8 +19,7 @@
 #include "../common/dream.h"
 #include "dream_round128_avx.h"
 
-#include <emmintrin.h>
-#include <smmintrin.h>
+#include <x86intrin.h>
 
 static const uint32_t rc[8] = { 
         0x243F6A88,
@@ -168,7 +167,7 @@ int dream128_unwrap(const uint8_t *key,
                 const uint8_t *header, size_t hl,
                 const uint8_t *cgram, size_t cl, 
                 uint8_t *body, 
-                uint8_t *tag)
+                const uint8_t *tag)
 {
         if(hl >= R)
                 return 0;

@@ -18,12 +18,8 @@
 #ifndef DREAM_ROUND_AVX_H
 #define DREAM_ROUND_AVX_H
 
-<<<<<<< HEAD
 #define _mm256_rotr_epi64(a,n) (_mm256_or_si256(_mm256_srli_epi64(a,n), _mm256_slli_epi64(a,64-n)))
 
-=======
-#define _mm256_rotr_epi64(a,n) _mm256_or_si256(_mm256_srli_epi64(a,n), _mm256_slli_epi64(a,64-n))
->>>>>>> parent of 4922a1a... Merge branch 'master' of https://github.com/grif24/test
 #define Q(a,b,c,r) 							        \
 	do { 									\
 		b = _mm256_add_epi64(b, a); 					\

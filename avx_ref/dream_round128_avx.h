@@ -19,10 +19,7 @@
 #define DREAM_ROUND_AVX_H
 
 #define _mm_rotr_epi32(a,n) (_mm_or_si128(_mm_srli_epi32(a,n), _mm_slli_epi32(a,32-n)))
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of 4922a1a... Merge branch 'master' of https://github.com/grif24/test
 #define Q(a,b,c,r) 							        \
 	do { 									\
 		b = _mm_add_epi32(b, a); 					\

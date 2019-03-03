@@ -30,11 +30,11 @@ static const uint32_t rc[8] = {
 };
 
 #define Q(a,b,c,r) (b += a, c += ror32(b,r), a ^= c)
-#define MIX(a,b,c)                            \
-        do {                                    \
-                Q(a,b,c,16);                \
-                Q(a,b,c,31);               \
-                Q(a,b,c,24);               \
+#define MIX(a,b,c)                      \
+        do {                            \
+                Q(a,b,c,16);            \
+                Q(a,b,c,31);            \
+                Q(a,b,c,24);            \
         } while(0)
 #define ROUND(n)                        \
 	do {                            \
@@ -43,17 +43,17 @@ static const uint32_t rc[8] = {
 		MIX(s[1],s[9],s[17]);   \
 		MIX(s[2],s[10],s[18]);  \
 		MIX(s[3],s[11],s[19]);  \
-		MIX(s[4],s[12],s[20]);   \
-		MIX(s[5],s[13],s[21]);   \
+		MIX(s[4],s[12],s[20]);  \
+		MIX(s[5],s[13],s[21]);  \
 		MIX(s[6],s[14],s[22]);  \
 		MIX(s[7],s[15],s[23]);  \
 		s[0] ^= rc[n+1];        \
 		MIX(s[4],s[9],s[18]);   \
-		MIX(s[5],s[10],s[19]);   \
+		MIX(s[5],s[10],s[19]);  \
 		MIX(s[6],s[11],s[16]);  \
-		MIX(s[7],s[8],s[17]);  \
-		MIX(s[0],s[13],s[22]);   \
-		MIX(s[1],s[14],s[23]);   \
+		MIX(s[7],s[8],s[17]);  	\
+		MIX(s[0],s[13],s[22]);  \
+		MIX(s[1],s[14],s[23]);  \
 		MIX(s[2],s[15],s[20]);  \
 		MIX(s[3],s[12],s[21]);  \
 	} while(0)
@@ -165,7 +165,7 @@ int dream128_unwrap(const uint8_t *key,
 		const uint8_t *header, size_t hl,
 		const uint8_t *cgram, size_t cl, 
 		uint8_t *body, 
-		uint8_t *tag)
+		const uint8_t *tag)
 {
         if(hl >= R)
                 return 0;
